@@ -39,7 +39,28 @@ const updateUI = () => {
         entryTextSection.style.display = 'none';
     }
 }
-const renderNewMovieElemet = (title, imageUrl, rating) => {
+
+const deleteMovie = (movieId) => {
+    let movieIndex = 0;
+    for (movie of movies) {
+        if (movie.id === movieId) {
+            break;
+        }
+        movieIndex++;
+    }
+    movies.splice(movieIndex, 1);
+    const listRoot = document.getElementById('movie-list');
+    listRoot.children[movieIndex].remove();
+}
+
+const deleteMovieHandler = (movieId) => {
+    const deleteMovieModal = document.getElementById("delete-modal");
+    deleteMovieModal.classList.add('visible');
+    toggleBackDrop();
+    // deleteMovie(movieId);
+}
+
+const renderNewMovieElemet = (id, title, imageUrl, rating) => {
     const newMovieElement = document.createElement('li');
     newMovieElement.className = "movie-element";
     newMovieElement.innerHTML = ` 
@@ -51,6 +72,8 @@ const renderNewMovieElemet = (title, imageUrl, rating) => {
     <p>${rating}/5 stars</p>
     </div>
      `;
+
+    newMovieElement.addEventListener("click", deleteMovieHandler.bind(null, id));
     const listRoot = document.getElementById('movie-list');
     listRoot.append(newMovieElement);
 }
@@ -65,6 +88,7 @@ const addMovieModalClickHandler = () => {
         return;
     }
     const newMovie = {
+        id: Math.random().toString(),
         title: titleValue,
         image: imageUrlValue,
         rating: ratingValue
@@ -73,7 +97,7 @@ const addMovieModalClickHandler = () => {
     console.log(movies);
     toggleMovieModal();
     clearMovieInput();
-    renderNewMovieElemet(newMovie.title, newMovie.image, newMovie.rating);
+    renderNewMovieElemet(newMovie.id, newMovie.title, newMovie.image, newMovie.rating);
     updateUI();
 }
 
